@@ -1,0 +1,64 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  nats:
+    image: nats:2.10
+    container_name: nats
+    restart: unless-stopped
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+
+  gateway:
+    build: ./gateway
+    container_name: gateway
+    restart: unless-stopped
+    ports:
+      - "${GATEWAY_PORT}:8080"
+    env_file:
+      - ./gateway/.env
+    depends_on:
+      - auth
+      - product
+
+  auth:
+    build: ./auth
+    container_name: auth
+    volumes:
+      - ./auth:/app
+      - ./shared:/app/shared
+    restart: unless-stopped
+    ports:
+      - "8002:8000"
+    env_file:
+      - ./auth/.env
+    depends_on:
+      - postgres
+
+  product:
+    build: ./product
+    container_name: product
+    volumes:
+      - ./product:/app
+    restart: unless-stopped
+    ports:
+      - "8001:8000"
+    env_file:
+      - ./product/.env
+    depends_on:
+      - postgres
+
+volumes:
+  pgdata:
