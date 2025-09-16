@@ -57,7 +57,7 @@ docker-compose up --build
 #### 2. Run a Single Service (e.g., auth\_service)
 
 ```bash
-cd auth_service
+cd auth
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8001
 ```
 
@@ -90,8 +90,8 @@ http POST localhost:8000/products name="Rose Perfume" price=50.0
 ## 📁 Service Links
 
 * [gateway/](./gateway)
-* [auth\_service/](./auth_service)
-* [product\_service/](./product_service)
+* [auth\_service/](auth)
+* [product\_service/](product)
 * [shared/](./shared)
 
 ---
@@ -101,7 +101,7 @@ http POST localhost:8000/products name="Rose Perfume" price=50.0
 Each service has its own `.env` file. Sample contents:
 
 ```ini
-# .env for auth_service
+# .env for auth
 DB_URL=postgresql://user:password@auth_db:5432/auth_db
 JWT_SECRET=supersecret
 ```
